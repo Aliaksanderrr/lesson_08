@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:columnCount="4"
+    android:rowCount="6">
+
+    <TextView
+        android:id="@+id/main_screen"
+        style="@style/MyAppTextView"
+        android:layout_columnSpan="3"
+        android:textSize="@dimen/text_size_raised"
+        android:textStyle="bold"
+        tools:text="answer" />
+
+    <Button
+        android:id="@+id/button_C"
+        style="@style/MyAppButtons"
+        android:layout_rowSpan="2"
+        android:text="@string/button_c" />
+
+    <TextView
+        android:id="@+id/secondary_screen"
+        style="@style/MyAppTextView"
+        android:layout_columnSpan="3"
+        tools:text="equation" />
+
+    <Button
+        android:id="@+id/button_7"
+        style="@style/MyAppButtons"
+        android:text="@string/button_7" />
+
+    <Button
+        android:id="@+id/button_8"
+        style="@style/MyAppButtons"
+        android:text="@string/button_8" />
+
+    <Button
+        android:id="@+id/button_9"
+        style="@style/MyAppButtons"
+        android:text="@string/button_9" />
+
+    <Button
+        android:id="@+id/button_division"
+        style="@style/MyAppButtons"
+        android:text="@string/button_division" />
+
+    <Button
+        android:id="@+id/button_4"
+        style="@style/MyAppButtons"
+        android:text="@string/button_4" />
+
+    <Button
+        android:id="@+id/button_5"
+        style="@style/MyAppButtons"
+        android:text="@string/button_5" />
+
+    <Button
+        android:id="@+id/button_6"
+        style="@style/MyAppButtons"
+        android:text="@string/button_6" />
+
+    <Button
+        android:id="@+id/button_multiplication"
+        style="@style/MyAppButtons"
+        android:text="@string/button_multiplication" />
+
+    <Button
+        android:id="@+id/button_1"
+        style="@style/MyAppButtons"
+        android:text="@string/button_1" />
+
+    <Button
+        android:id="@+id/button_2"
+        style="@style/MyAppButtons"
+        android:text="@string/button_2" />
+
+    <Button
+        android:id="@+id/button_3"
+        style="@style/MyAppButtons"
+        android:text="@string/button_3" />
+
+    <Button
+        android:id="@+id/button_minus"
+        style="@style/MyAppButtons"
+        android:text="@string/button_minus" />
+
+    <Button
+        android:id="@+id/button_0"
+        style="@style/MyAppButtons"
+        android:layout_columnSpan="2"
+        android:text="@string/button_0" />
+
+    <Button
+        android:id="@+id/button_equal"
+        style="@style/MyAppButtons"
+        android:text="@string/button_equal" />
+
+    <Button
+        android:id="@+id/button_plus"
+        style="@style/MyAppButtons"
+        android:text="@string/button_plus" />
+</GridLayout>
