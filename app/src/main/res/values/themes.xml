@@ -28,6 +28,7 @@
         <item name="android:layout_columnWeight">1</item>
         <item name="android:layout_rowWeight">1</item>
         <item name="android:layout_margin">@dimen/view_layout_margin</item>
+        <item name="android:maxLines">1</item>
         <item name="android:textSize">@dimen/text_size_main</item>
         <item name="android:gravity">end|bottom</item>
         <item name="android:paddingBottom">@dimen/text_view_padding_bottom</item>

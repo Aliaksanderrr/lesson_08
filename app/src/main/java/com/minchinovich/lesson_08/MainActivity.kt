@@ -4,14 +4,20 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.minchinovich.lesson_08.databinding.ActivityMainBinding
 
-private const val MAIN_SCREEN = "main screen"
-private const val SECONDARY_SCREEN = "secondary screen"
-private const val TEMP_NUM = "temp num"
-private const val CURRENT_NUM = "current num"
-private const val TEMP_ANSWER = "temp answer"
-private const val CURRENT_FUNCTION = "current function"
+private const val MAIN_SCREEN_KEY = "main screen"
+private const val SECONDARY_SCREEN_KEY = "secondary screen"
+private const val TEMP_NUM_KEY = "temp num"
+private const val CURRENT_NUM_KEY = "current num"
+private const val TEMP_ANSWER_KEY = "temp answer"
+private const val CURRENT_FUNCTION_KEY = "current function"
 
 class MainActivity : AppCompatActivity() {
+
+    private val errorMessage by lazy { getString(R.string.error_message) }
+    private val plusSymbol by lazy { getString(R.string.button_plus) }
+    private val minusSymbol by lazy { getString(R.string.button_minus) }
+    private val divisionSymbol by lazy { getString(R.string.button_division) }
+    private val multiplicationSymbol by lazy { getString(R.string.button_multiplication) }
 
     private lateinit var binding: ActivityMainBinding
 
@@ -28,13 +34,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (savedInstanceState != null) {
-            mainScreenText = savedInstanceState.getString(MAIN_SCREEN, "")
-            secondaryScreenText = savedInstanceState.getString(SECONDARY_SCREEN, "")
-            tempNum = savedInstanceState.getInt(TEMP_NUM)
-            currentNum = savedInstanceState.getInt(CURRENT_NUM, 0)
-            tempAnswer = savedInstanceState.getInt(TEMP_ANSWER, 0)
+            mainScreenText = savedInstanceState.getString(MAIN_SCREEN_KEY, "")
+            secondaryScreenText = savedInstanceState.getString(SECONDARY_SCREEN_KEY, "")
+            tempNum = savedInstanceState.getInt(TEMP_NUM_KEY)
+            currentNum = savedInstanceState.getInt(CURRENT_NUM_KEY, 0)
+            tempAnswer = savedInstanceState.getInt(TEMP_ANSWER_KEY, 0)
             currentFunction =
-                FunctionalButton.valueOf(savedInstanceState.getString(CURRENT_FUNCTION, "DEFAULT"))
+                FunctionalButton.valueOf(savedInstanceState.getString(CURRENT_FUNCTION_KEY, "DEFAULT"))
         }
         binding.mainScreen.text = mainScreenText
         binding.secondaryScreen.text = secondaryScreenText
@@ -44,12 +50,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(MAIN_SCREEN, mainScreenText)
-        outState.putString(SECONDARY_SCREEN, secondaryScreenText)
-        tempNum?.let { outState.putInt(TEMP_NUM, it) }
-        outState.putInt(CURRENT_NUM, currentNum)
-        outState.putInt(TEMP_ANSWER, tempAnswer)
-        outState.putString(CURRENT_FUNCTION, currentFunction.name)
+        outState.putString(MAIN_SCREEN_KEY, mainScreenText)
+        outState.putString(SECONDARY_SCREEN_KEY, secondaryScreenText)
+        tempNum?.let { outState.putInt(TEMP_NUM_KEY, it) }
+        outState.putInt(CURRENT_NUM_KEY, currentNum)
+        outState.putInt(TEMP_ANSWER_KEY, tempAnswer)
+        outState.putString(CURRENT_FUNCTION_KEY, currentFunction.name)
         super.onSaveInstanceState(outState)
     }
 
@@ -104,13 +110,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun initialiseFunctionalButton() {
         binding.buttonEqual.setOnClickListener {
-            currentNum = currentFunction.func?.invoke(tempAnswer, currentNum) ?: currentNum
+            try {
+                currentNum = currentFunction.func?.invoke(tempAnswer, currentNum) ?: currentNum
+                binding.mainScreen.text = currentNum.toString()
+            } catch (e: ArithmeticException) {
+                currentNum = 0
+                binding.mainScreen.text = errorMessage
+            }
             tempAnswer = 0
             secondaryScreenText = ""
             tempNum = null
             currentFunction = FunctionalButton.DEFAULT
             mainScreenText = ""
-            binding.mainScreen.text = currentNum.toString()
             binding.secondaryScreen.text = secondaryScreenText
         }
 
@@ -126,28 +137,34 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonPlus.setOnClickListener {
-            pressFunctionalButton(FunctionalButton.PLUS, "+")
+            pressFunctionalButton(FunctionalButton.PLUS, plusSymbol)
         }
 
         binding.buttonMinus.setOnClickListener {
-            pressFunctionalButton(FunctionalButton.MINUS, "-")
+            pressFunctionalButton(FunctionalButton.MINUS, minusSymbol)
         }
 
         binding.buttonMultiplication.setOnClickListener {
-            pressFunctionalButton(FunctionalButton.MULTIPLICATION, "*")
+            pressFunctionalButton(FunctionalButton.MULTIPLICATION, multiplicationSymbol)
         }
 
         binding.buttonDivision.setOnClickListener {
-            pressFunctionalButton(FunctionalButton.DIVISION, "/")
+            pressFunctionalButton(FunctionalButton.DIVISION, divisionSymbol)
         }
     }
 
     private fun pressFunctionalButton(selectedFunction: FunctionalButton, functionSymbol: String) {
         if (tempNum != null || currentFunction == FunctionalButton.DEFAULT) {
             secondaryScreenText = secondaryScreenText.plus(" $currentNum $functionSymbol")
-            tempAnswer = currentFunction.func?.invoke(tempAnswer, currentNum) ?: currentNum
+            try {
+                tempAnswer = currentFunction.func?.invoke(tempAnswer, currentNum) ?: currentNum
+                mainScreenText = ""
+            } catch (e: ArithmeticException) {
+                tempAnswer = 0
+                mainScreenText = errorMessage
+                secondaryScreenText = "$tempAnswer $functionSymbol"
+            }
             tempNum = null
-            mainScreenText = ""
             currentNum = 0
             currentFunction = selectedFunction
             binding.mainScreen.text = mainScreenText
@@ -155,7 +172,6 @@ class MainActivity : AppCompatActivity() {
         } else if (tempNum == null && currentFunction != FunctionalButton.DEFAULT) {
             secondaryScreenText = secondaryScreenText.dropLast(1).plus(functionSymbol)
             currentFunction = selectedFunction
-            binding.mainScreen.text = mainScreenText
             binding.secondaryScreen.text = secondaryScreenText
         }
     }
