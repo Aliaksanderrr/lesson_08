@@ -13,9 +13,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private var secondaryScreenText = ""
+    private var mainScreenText = ""
+    private var tempNum: Int? = null
     private var currentNum = 0
     private var tempAnswer = 0
-    private var currentFunction: ((num1: Int, num2: Int) -> Int)? = { _, num1 -> num1 }
+    private var currentFunction = FunctionalButton.DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             secondaryScreenText = savedInstanceState.getString(SECONDARY_SCREEN, "")
         }
 
-        binding.mainScreen.text = currentNum.toString()
+        binding.mainScreen.text = ""
         binding.secondaryScreen.text = secondaryScreenText
 
         initialiseNumberButton()
@@ -43,130 +45,108 @@ class MainActivity : AppCompatActivity() {
 
     private fun initialiseNumberButton() {
         binding.button1.setOnClickListener {
-            currentNum = currentNum * 10 + 1
-            updateUI()
+            pressNumButton(1)
         }
 
         binding.button2.setOnClickListener {
-            currentNum = currentNum * 10 + 2
-            updateUI()
+            pressNumButton(2)
         }
 
         binding.button3.setOnClickListener {
-            currentNum = currentNum * 10 + 3
-            updateUI()
+            pressNumButton(3)
         }
 
         binding.button4.setOnClickListener {
-            currentNum = currentNum * 10 + 4
-            updateUI()
+            pressNumButton(4)
         }
 
         binding.button5.setOnClickListener {
-            currentNum = currentNum * 10 + 5
-            updateUI()
+            pressNumButton(5)
         }
 
         binding.button6.setOnClickListener {
-            currentNum = currentNum * 10 + 6
-            updateUI()
+            pressNumButton(6)
         }
 
         binding.button7.setOnClickListener {
-            currentNum = currentNum * 10 + 7
-            updateUI()
+            pressNumButton(7)
         }
 
         binding.button8.setOnClickListener {
-            currentNum = currentNum * 10 + 8
-            updateUI()
+            pressNumButton(8)
         }
 
         binding.button9.setOnClickListener {
-            currentNum = currentNum * 10 + 9
-            updateUI()
+            pressNumButton(9)
         }
 
         binding.button0.setOnClickListener {
-            currentNum *= 10
-            updateUI()
+            pressNumButton(0)
         }
+    }
+
+    private fun pressNumButton(selectedNum: Int) {
+        tempNum = (tempNum?.times(10) ?: 0) + selectedNum
+        currentNum = tempNum ?: 0
+        mainScreenText = tempNum?.toString() ?: ""
+        binding.mainScreen.text = mainScreenText
     }
 
     private fun initialiseFunctionalButton() {
         binding.buttonEqual.setOnClickListener {
-            currentNum = currentFunction?.invoke(tempAnswer, currentNum)
-                ?: binding.mainScreen.text.toString().toInt()
+            currentNum = currentFunction.func?.invoke(tempAnswer, currentNum) ?: currentNum
             tempAnswer = 0
             secondaryScreenText = ""
-            currentFunction = null
-            updateUI()
-            currentNum = 0
-        }
-
-        binding.buttonPlus.setOnClickListener {
-            if (currentFunction == null) {
-                tempAnswer = binding.mainScreen.text.toString().toInt()
-                secondaryScreenText = secondaryScreenText.plus(" $tempAnswer + ")
-            } else {
-                secondaryScreenText = secondaryScreenText.plus(" $currentNum + ")
-                tempAnswer = currentFunction?.invoke(tempAnswer, currentNum) ?: tempAnswer
-            }
-            currentNum = 0
-            currentFunction = { num1, num2 -> num1 + num2 }
-            updateUI()
-        }
-
-        binding.buttonMinus.setOnClickListener {
-            if (currentFunction == null) {
-                tempAnswer = binding.mainScreen.text.toString().toInt()
-                secondaryScreenText = secondaryScreenText.plus(" $tempAnswer - ")
-            } else {
-                secondaryScreenText = secondaryScreenText.plus(" $currentNum - ")
-                tempAnswer = currentFunction?.invoke(tempAnswer, currentNum) ?: tempAnswer
-            }
-            currentNum = 0
-            currentFunction = { num1, num2 -> num1 - num2 }
-            updateUI()
-        }
-
-        binding.buttonDivision.setOnClickListener {
-            if (currentFunction == null) {
-                tempAnswer = binding.mainScreen.text.toString().toInt()
-                secondaryScreenText = secondaryScreenText.plus(" $tempAnswer / ")
-            } else {
-                secondaryScreenText = secondaryScreenText.plus(" $currentNum / ")
-                tempAnswer = currentFunction?.invoke(tempAnswer, currentNum) ?: tempAnswer
-            }
-            currentNum = 0
-            currentFunction = { num1, num2 -> num1 / num2 }
-            updateUI()
-        }
-
-        binding.buttonMultiplication.setOnClickListener {
-            if (currentFunction == null) {
-                tempAnswer = binding.mainScreen.text.toString().toInt()
-                secondaryScreenText = secondaryScreenText.plus(" $tempAnswer * ")
-            } else {
-                secondaryScreenText = secondaryScreenText.plus(" $currentNum * ")
-                tempAnswer = currentFunction?.invoke(tempAnswer, currentNum) ?: tempAnswer
-            }
-            currentNum = 0
-            currentFunction = { num1, num2 -> num1 * num2 }
-            updateUI()
+            tempNum = null
+            currentFunction = FunctionalButton.DEFAULT
+            mainScreenText = ""
+            binding.mainScreen.text = currentNum.toString()
+            binding.secondaryScreen.text = secondaryScreenText
         }
 
         binding.buttonC.setOnClickListener {
             currentNum = 0
+            tempNum = null
+            mainScreenText = ""
             secondaryScreenText = ""
             tempAnswer = 0
-            currentFunction = { _, num1 -> num1 }
-            updateUI()
+            currentFunction = FunctionalButton.DEFAULT
+            binding.mainScreen.text = mainScreenText
+            binding.secondaryScreen.text = secondaryScreenText
+        }
+
+        binding.buttonPlus.setOnClickListener {
+            pressFunButton(FunctionalButton.PLUS, "+")
+        }
+
+        binding.buttonMinus.setOnClickListener {
+            pressFunButton(FunctionalButton.MINUS, "-")
+        }
+
+        binding.buttonMultiplication.setOnClickListener {
+            pressFunButton(FunctionalButton.MULTIPLICATION, "*")
+        }
+
+        binding.buttonDivision.setOnClickListener {
+            pressFunButton(FunctionalButton.DIVISION, "/")
         }
     }
 
-    private fun updateUI() {
-        binding.mainScreen.text = currentNum.toString()
-        binding.secondaryScreen.text = secondaryScreenText
+    private fun pressFunButton(pressFunc: FunctionalButton, funcSymbol: String) {
+        if (tempNum != null || currentFunction == FunctionalButton.DEFAULT) {
+            secondaryScreenText = secondaryScreenText.plus(" $currentNum $funcSymbol")
+            tempAnswer = currentFunction.func?.invoke(tempAnswer, currentNum) ?: currentNum
+            tempNum = null
+            mainScreenText = ""
+            currentNum = 0
+            currentFunction = pressFunc
+            binding.mainScreen.text = mainScreenText
+            binding.secondaryScreen.text = secondaryScreenText
+        } else if (tempNum == null && currentFunction != FunctionalButton.DEFAULT) {
+            secondaryScreenText = secondaryScreenText.dropLast(1).plus(funcSymbol)
+            currentFunction = pressFunc
+            binding.mainScreen.text = mainScreenText
+            binding.secondaryScreen.text = secondaryScreenText
+        }
     }
 }
