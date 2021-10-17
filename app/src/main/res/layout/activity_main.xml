@@ -25,7 +25,7 @@
         android:id="@+id/secondary_screen"
         style="@style/MyAppTextView"
         android:layout_columnSpan="3"
-        tools:text="equation" />
+        tools:text="very_very_very_very_very_very_very_very_long_expression" />
 
     <Button
         android:id="@+id/button_7"
