@@ -14,6 +14,7 @@ private const val CURRENT_FUNCTION_KEY = "current function"
 class MainActivity : AppCompatActivity() {
 
     private val errorMessage by lazy { getString(R.string.error_message) }
+    private val overflowMessage by lazy { getString(R.string.overflow_message) }
     private val plusSymbol by lazy { getString(R.string.button_plus) }
     private val minusSymbol by lazy { getString(R.string.button_minus) }
     private val divisionSymbol by lazy { getString(R.string.button_division) }
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private var tempNum: Int? = null
     private var currentNum = 0
     private var tempAnswer = 0
-    private var currentFunction = FunctionalButton.DEFAULT
+    private var currentFunction = Function.DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             currentNum = savedInstanceState.getInt(CURRENT_NUM_KEY, 0)
             tempAnswer = savedInstanceState.getInt(TEMP_ANSWER_KEY, 0)
             currentFunction =
-                FunctionalButton.valueOf(savedInstanceState.getString(CURRENT_FUNCTION_KEY, "DEFAULT"))
+                Function.valueOf(savedInstanceState.getString(CURRENT_FUNCTION_KEY, "DEFAULT"))
         }
         binding.mainScreen.text = mainScreenText
         binding.secondaryScreen.text = secondaryScreenText
@@ -102,26 +103,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun pressNumberButton(selectedNum: Int) {
-        tempNum = (tempNum?.times(10) ?: 0) + selectedNum
-        currentNum = tempNum ?: 0
-        mainScreenText = tempNum?.toString() ?: ""
+        try {
+            tempNum = tempNum?.let { Function.MULTIPLICATION.func(it, 10) } ?: 0
+            tempNum = Function.PLUS.func(tempNum!!, selectedNum)
+            currentNum = tempNum ?: 0
+            mainScreenText = tempNum?.toString() ?: ""
+        } catch (e: IllegalArgumentException) {
+            tempNum = null
+            currentNum = 0
+            mainScreenText = overflowMessage
+        }
         binding.mainScreen.text = mainScreenText
     }
 
     private fun initialiseFunctionalButton() {
         binding.buttonEqual.setOnClickListener {
             try {
-                currentNum = currentFunction.func?.invoke(tempAnswer, currentNum) ?: currentNum
-                binding.mainScreen.text = currentNum.toString()
+                currentNum = currentFunction.func.invoke(tempAnswer, currentNum)
+                mainScreenText = currentNum.toString()
             } catch (e: ArithmeticException) {
                 currentNum = 0
-                binding.mainScreen.text = errorMessage
+                mainScreenText = errorMessage
+            } catch (e: IllegalArgumentException) {
+                currentNum = 0
+                mainScreenText = overflowMessage
             }
             tempAnswer = 0
             secondaryScreenText = ""
             tempNum = null
-            currentFunction = FunctionalButton.DEFAULT
-            mainScreenText = ""
+            currentFunction = Function.DEFAULT
+            binding.mainScreen.text = mainScreenText
             binding.secondaryScreen.text = secondaryScreenText
         }
 
@@ -131,37 +142,41 @@ class MainActivity : AppCompatActivity() {
             mainScreenText = ""
             secondaryScreenText = ""
             tempAnswer = 0
-            currentFunction = FunctionalButton.DEFAULT
+            currentFunction = Function.DEFAULT
             binding.mainScreen.text = mainScreenText
             binding.secondaryScreen.text = secondaryScreenText
         }
 
         binding.buttonPlus.setOnClickListener {
-            pressFunctionalButton(FunctionalButton.PLUS, plusSymbol)
+            pressFunctionalButton(Function.PLUS, plusSymbol)
         }
 
         binding.buttonMinus.setOnClickListener {
-            pressFunctionalButton(FunctionalButton.MINUS, minusSymbol)
+            pressFunctionalButton(Function.MINUS, minusSymbol)
         }
 
         binding.buttonMultiplication.setOnClickListener {
-            pressFunctionalButton(FunctionalButton.MULTIPLICATION, multiplicationSymbol)
+            pressFunctionalButton(Function.MULTIPLICATION, multiplicationSymbol)
         }
 
         binding.buttonDivision.setOnClickListener {
-            pressFunctionalButton(FunctionalButton.DIVISION, divisionSymbol)
+            pressFunctionalButton(Function.DIVISION, divisionSymbol)
         }
     }
 
-    private fun pressFunctionalButton(selectedFunction: FunctionalButton, functionSymbol: String) {
-        if (tempNum != null || currentFunction == FunctionalButton.DEFAULT) {
+    private fun pressFunctionalButton(selectedFunction: Function, functionSymbol: String) {
+        if (tempNum != null || currentFunction == Function.DEFAULT) {
             secondaryScreenText = secondaryScreenText.plus(" $currentNum $functionSymbol")
             try {
-                tempAnswer = currentFunction.func?.invoke(tempAnswer, currentNum) ?: currentNum
+                tempAnswer = currentFunction.func.invoke(tempAnswer, currentNum)
                 mainScreenText = ""
             } catch (e: ArithmeticException) {
                 tempAnswer = 0
                 mainScreenText = errorMessage
+                secondaryScreenText = "$tempAnswer $functionSymbol"
+            } catch (e: IllegalArgumentException) {
+                currentNum = 0
+                mainScreenText = overflowMessage
                 secondaryScreenText = "$tempAnswer $functionSymbol"
             }
             tempNum = null
@@ -169,7 +184,7 @@ class MainActivity : AppCompatActivity() {
             currentFunction = selectedFunction
             binding.mainScreen.text = mainScreenText
             binding.secondaryScreen.text = secondaryScreenText
-        } else if (tempNum == null && currentFunction != FunctionalButton.DEFAULT) {
+        } else if (tempNum == null && currentFunction != Function.DEFAULT) {
             secondaryScreenText = secondaryScreenText.dropLast(1).plus(functionSymbol)
             currentFunction = selectedFunction
             binding.secondaryScreen.text = secondaryScreenText
