@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">intCalc</string>
+w
     <string name="button_1">1</string>
     <string name="button_2">2</string>
     <string name="button_3">3</string>
@@ -10,6 +11,7 @@
     <string name="button_8">8</string>
     <string name="button_9">9</string>
     <string name="button_0">0</string>
+    <string name="button_return">OK</string>
     <string name="button_c">C</string>
     <string name="button_equal">=</string>
     <string name="button_division">/</string>
@@ -19,4 +21,10 @@
 
     <string name="error_message">ERROR</string>
     <string name="overflow_message">INT OVERFLOW</string>
+
+    <string name="saved_answers">Сохраненные значения:</string>
+    <string name="title_current_answer">Текущее значение</string>
+    <string name="button_save_answer">Save</string>
+    <string name="button_calculator">Калькулятор</string>
+
 </resources>

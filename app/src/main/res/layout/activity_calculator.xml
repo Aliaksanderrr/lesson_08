@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:columnCount="4"
+    android:rowCount="6">
+
+    <TextView
+        android:id="@+id/main_screen"
+        style="@style/AppCalcTextView"
+        android:layout_columnSpan="3"
+        android:textSize="@dimen/text_size_raised"
+        android:textStyle="bold"
+        tools:text="answer" />
+
+    <Button
+        android:id="@+id/button_return"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_return" />
+
+    <TextView
+        android:id="@+id/secondary_screen"
+        style="@style/AppCalcTextView"
+        android:layout_columnSpan="3"
+        tools:text="very_very_very_very_very_very_very_very_long_expression" />
+
+    <Button
+        android:id="@+id/button_C"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_c" />
+
+    <Button
+        android:id="@+id/button_7"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_7" />
+
+    <Button
+        android:id="@+id/button_8"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_8" />
+
+    <Button
+        android:id="@+id/button_9"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_9" />
+
+    <Button
+        android:id="@+id/button_division"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_division" />
+
+    <Button
+        android:id="@+id/button_4"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_4" />
+
+    <Button
+        android:id="@+id/button_5"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_5" />
+
+    <Button
+        android:id="@+id/button_6"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_6" />
+
+    <Button
+        android:id="@+id/button_multiplication"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_multiplication" />
+
+    <Button
+        android:id="@+id/button_1"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_1" />
+
+    <Button
+        android:id="@+id/button_2"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_2" />
+
+    <Button
+        android:id="@+id/button_3"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_3" />
+
+    <Button
+        android:id="@+id/button_minus"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_minus" />
+
+    <Button
+        android:id="@+id/button_0"
+        style="@style/AppCalcButtons"
+        android:layout_columnSpan="2"
+        android:text="@string/button_0" />
+
+    <Button
+        android:id="@+id/button_equal"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_equal" />
+
+    <Button
+        android:id="@+id/button_plus"
+        style="@style/AppCalcButtons"
+        android:text="@string/button_plus" />
+</GridLayout>

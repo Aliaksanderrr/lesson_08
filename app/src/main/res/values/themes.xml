@@ -2,27 +2,43 @@
     <!-- Base application theme. -->
     <style name="Theme.Lesson_08" parent="Theme.AppCompat.DayNight" />
 
-    <style name="MyAppButtons" parent="Base.Widget.AppCompat.Button">
+    <style name="AppMainButtons" parent="Base.Widget.AppCompat.Button">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">fill</item>
-        <item name="android:layout_columnWeight">1</item>
-        <item name="android:layout_rowWeight">1</item>
         <item name="android:layout_margin">@dimen/view_layout_margin</item>
         <item name="android:textSize">@dimen/text_size_main</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="MyAppTextView" parent="Base.Widget.AppCompat.TextView">
-        <item name="android:layout_width">0dp</item>
+    <style name="AppCalcButtons" parent="AppMainButtons">
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_columnWeight">1</item>
         <item name="android:layout_rowWeight">1</item>
+    </style>
+
+    <style name="AppMainTextView" parent="Base.Widget.AppCompat.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">@dimen/view_layout_margin</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/text_size_main</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingBottom">@dimen/text_view_padding_bottom</item>
+    </style>
+
+    <style name="AppMainTextView.Title">
+        <item name="android:textSize">@dimen/text_size_raised</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_margin">@dimen/view_layout_margin_title</item>
+    </style>
+
+    <style name="AppCalcTextView" parent="AppMainTextView">
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">start</item>
-        <item name="android:textSize">@dimen/text_size_main</item>
         <item name="android:gravity">end|bottom</item>
-        <item name="android:paddingBottom">@dimen/text_view_padding_bottom</item>
     </style>
 </resources>
