@@ -41,7 +41,9 @@ enum class Function(
     }) {
         override fun detectOverflow(answer: Int, num: Int): Int {
             return when {
-                answer != 0 && Int.MAX_VALUE / abs(answer) <= abs(num) -> throw IllegalArgumentException("Int overflow")
+                answer != 0 && Int.MAX_VALUE / abs(answer) <= abs(num) -> throw IllegalArgumentException(
+                    "Int overflow"
+                )
                 else -> answer * num
             }
         }

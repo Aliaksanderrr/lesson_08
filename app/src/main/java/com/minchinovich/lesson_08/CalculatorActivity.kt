@@ -38,20 +38,6 @@ class CalculatorActivity : AppCompatActivity() {
         binding = ActivityCalculatorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (savedInstanceState != null) {
-            mainScreenText = savedInstanceState.getString(MAIN_SCREEN_KEY, "")
-            secondaryScreenText = savedInstanceState.getString(SECONDARY_SCREEN_KEY, "")
-            tempNum = savedInstanceState.getInt(TEMP_NUM_KEY)
-            currentNum = savedInstanceState.getInt(CURRENT_NUM_KEY)
-            tempAnswer = savedInstanceState.getInt(TEMP_ANSWER_KEY)
-            currentFunction =
-                Function.valueOf(
-                    savedInstanceState.getString(
-                        CURRENT_FUNCTION_KEY,
-                        Function.DEFAULT.name
-                    )
-                )
-        }
         binding.mainScreen.text = mainScreenText
         binding.secondaryScreen.text = secondaryScreenText
 
@@ -67,6 +53,24 @@ class CalculatorActivity : AppCompatActivity() {
         outState.putInt(TEMP_ANSWER_KEY, tempAnswer)
         outState.putString(CURRENT_FUNCTION_KEY, currentFunction.name)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        mainScreenText = savedInstanceState.getString(MAIN_SCREEN_KEY, "")
+        secondaryScreenText = savedInstanceState.getString(SECONDARY_SCREEN_KEY, "")
+        tempNum = savedInstanceState.getInt(TEMP_NUM_KEY)
+        currentNum = savedInstanceState.getInt(CURRENT_NUM_KEY)
+        tempAnswer = savedInstanceState.getInt(TEMP_ANSWER_KEY)
+        currentFunction =
+            Function.valueOf(
+                savedInstanceState.getString(
+                    CURRENT_FUNCTION_KEY,
+                    Function.DEFAULT.name
+                )
+            )
+        binding.mainScreen.text = mainScreenText
+        binding.secondaryScreen.text = secondaryScreenText
     }
 
     private fun initialiseNumberButton() {
@@ -146,19 +150,17 @@ class CalculatorActivity : AppCompatActivity() {
 
         binding.buttonEqual.setOnClickListener {
             try {
-                currentNum = currentFunction.func.invoke(tempAnswer, currentNum)
-                mainScreenText = currentNum.toString()
+                tempAnswer = currentFunction.func.invoke(tempAnswer, currentNum)
+                mainScreenText = tempAnswer.toString()
             } catch (e: ArithmeticException) {
-                currentNum = 0
+                tempAnswer = 0
                 mainScreenText = errorMessage
             } catch (e: IllegalArgumentException) {
-                currentNum = 0
+                tempAnswer = 0
                 mainScreenText = overflowMessage
             }
-            tempAnswer = 0
             secondaryScreenText = ""
             tempNum = null
-            currentFunction = Function.DEFAULT
             binding.mainScreen.text = mainScreenText
             binding.secondaryScreen.text = secondaryScreenText
         }
@@ -198,6 +200,14 @@ class CalculatorActivity : AppCompatActivity() {
             tempNum = null
             currentNum = 0
             currentFunction = selectedFunction
+            binding.mainScreen.text = mainScreenText
+            binding.secondaryScreen.text = secondaryScreenText
+        } else if (secondaryScreenText.isEmpty()) {
+            secondaryScreenText = secondaryScreenText.plus(" $tempAnswer $functionSymbol")
+            tempNum = null
+            currentNum = 0
+            currentFunction = selectedFunction
+            mainScreenText = ""
             binding.mainScreen.text = mainScreenText
             binding.secondaryScreen.text = secondaryScreenText
         } else if (tempNum == null && currentFunction != Function.DEFAULT) {
